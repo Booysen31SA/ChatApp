@@ -1,4 +1,5 @@
 import 'package:chatapp/services/auth.dart';
+import 'package:chatapp/services/database.dart';
 import 'package:chatapp/views/chatrooms.dart';
 import 'package:chatapp/widgets/widget.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  Database database = new Database();
   AuthMethods authMethods = new AuthMethods();
   bool isLoading = false;
   final formKey = GlobalKey<FormState>();
@@ -20,6 +22,10 @@ class _SignUpState extends State<SignUp> {
 
   signMeUp() {
     if (formKey.currentState.validate()) {
+      Map<String, String> userInfo = {
+        "name": username.text,
+        "email": email.text
+      };
       setState(() {
         isLoading = true;
       });
@@ -27,7 +33,7 @@ class _SignUpState extends State<SignUp> {
       authMethods
           .signUpWithEmailAndPassword(email.text, password.text)
           .then((val) {
-
+        database.uploadUserInfo(userInfo);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => ChatRooms()));
       });

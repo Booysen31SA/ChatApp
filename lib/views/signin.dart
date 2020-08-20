@@ -72,9 +72,13 @@ class _SigninState extends State<Signin> {
                       TextFormField(
                         obscureText: true,
                         validator: (val) {
-                          return val.isEmpty && val.length < 6
-                              ? 'Password is empty'
-                              : null;
+                          if(val.isEmpty) {
+                            return 'Password is empty';
+                          } 
+                          else if(val.length < 6) {
+                            return 'Password needs to be greater than 6 characters';
+                          }
+                          return null;
                         },
                         controller: password,
                         style: textStyle(),
