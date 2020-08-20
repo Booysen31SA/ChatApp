@@ -4,7 +4,14 @@ class Database {
   getUserByUsername(String username) async {
     return await Firestore.instance
         .collection('users')
-        .where('name', isEqualTo: username)
+        .where('name', isEqualTo: username.trim())
+        .getDocuments();
+  }
+
+  getUserByEmail(String email) async {
+    return await Firestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email.trim())
         .getDocuments();
   }
 
@@ -13,6 +20,9 @@ class Database {
   }
 
   createChatRoom(String chatroomid, chatroomMap) {
-    Firestore.instance.collection('Chatroom').document(chatroomid).setData(chatroomMap);
+    Firestore.instance
+        .collection('Chatroom')
+        .document(chatroomid)
+        .setData(chatroomMap);
   }
 }

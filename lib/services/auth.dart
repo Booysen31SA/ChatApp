@@ -1,3 +1,4 @@
+import 'package:chatapp/helper/helperfunctions.dart';
 import 'package:chatapp/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,7 +12,7 @@ class AuthMethods {
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
+          email: email.trim(), password: password);
       FirebaseUser firebaseUser = result.user;
       return _userFromFirebase(firebaseUser);
     } catch (e) {
@@ -22,7 +23,7 @@ class AuthMethods {
   Future signUpWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
+          email: email.trim(), password: password);
       FirebaseUser firebaseUser = result.user;
       return _userFromFirebase(firebaseUser);
     } catch (e) {
@@ -40,6 +41,9 @@ class AuthMethods {
 
   Future signOut() async {
     try {
+      HelperFunctions.saveUserLoggedinSharedPreference(false);
+      HelperFunctions.saveUserNameSharedPreference('USERNAMEKEY');
+      HelperFunctions.saveEmailSharedPreference('USEREMAILKEY');
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());

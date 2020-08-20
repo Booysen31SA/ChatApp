@@ -1,6 +1,10 @@
+import 'package:chatapp/helper/authenicate.dart';
+import 'package:chatapp/helper/helperfunctions.dart';
 import 'package:chatapp/services/auth.dart';
+import 'package:chatapp/services/database.dart';
 import 'package:chatapp/views/chatrooms.dart';
 import 'package:chatapp/widgets/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Signin extends StatefulWidget {
@@ -12,23 +16,52 @@ class Signin extends StatefulWidget {
 }
 
 class _SigninState extends State<Signin> {
+  QuerySnapshot snapshotUserInfo;
+  Database database = new Database();
   AuthMethods authMethods = new AuthMethods();
   bool isLoading = false;
   final formKey = GlobalKey<FormState>();
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
+  String name = '';
+
+  bool showSignIn = true;
+
+  void toggleView() {
+    setState(() {
+      showSignIn = !showSignIn;
+    });
+  }
 
   signMeIn() {
     if (formKey.currentState.validate()) {
+      HelperFunctions.saveEmailSharedPreference(email.text);
+
+      database.getUserByEmail(email.text).then((val) {
+        setState(() {
+          snapshotUserInfo = val;
+          HelperFunctions.saveUserNameSharedPreference(
+              snapshotUserInfo.documents[0].data["name"]);
+        });
+      });
+
       setState(() {
         isLoading = true;
       });
-
       authMethods
           .signInWithEmailAndPassword(email.text, password.text)
           .then((val) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ChatRooms()));
+        if (val != null) {
+          HelperFunctions.saveUserLoggedinSharedPreference(true);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => ChatRooms()));
+        } else {
+          HelperFunctions.saveUserLoggedinSharedPreference(false);
+          HelperFunctions.saveUserNameSharedPreference('USERNAMEKEY');
+          HelperFunctions.saveEmailSharedPreference('USEREMAILKEY');
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Authenticate()));
+        }
       });
     }
   }
@@ -72,10 +105,9 @@ class _SigninState extends State<Signin> {
                       TextFormField(
                         obscureText: true,
                         validator: (val) {
-                          if(val.isEmpty) {
+                          if (val.isEmpty) {
                             return 'Password is empty';
-                          } 
-                          else if(val.length < 6) {
+                          } else if (val.length < 6) {
                             return 'Password needs to be greater than 6 characters';
                           }
                           return null;
