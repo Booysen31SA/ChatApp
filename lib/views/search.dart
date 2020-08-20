@@ -21,10 +21,10 @@ class _SearchState extends State<Search> {
     });
   }
 
-  createChatRoomConversation(String username) {
-    List<String> users = [username, myName];
-    database.createChatRoom();
-  }
+  // createChatRoomConversation(String username) {
+  //   List<String> users = [username, myName];
+  //   database.createChatRoom();
+  // }
 
   Widget searchList() {
     return searchSnapshot != null
