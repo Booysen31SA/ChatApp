@@ -1,5 +1,4 @@
 import 'package:chatapp/helper/constants.dart';
-import 'package:chatapp/helper/helperFunctions.dart';
 import 'package:chatapp/services/database.dart';
 import 'package:chatapp/views/conversation.dart';
 import 'package:chatapp/widgets/widget.dart';
@@ -37,8 +36,8 @@ class _SearchState extends State<Search> {
         chatroomMap,
       );
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Conversation()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => Conversation(chatroomID)));
     } else {
       print('cant message yourself');
     }
@@ -93,7 +92,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: AppBar(title: Text('Chats')),
       body: Container(
         child: Column(children: [
           Container(
