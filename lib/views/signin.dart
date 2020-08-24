@@ -6,6 +6,7 @@ import 'package:chatapp/views/chatrooms.dart';
 import 'package:chatapp/widgets/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class Signin extends StatefulWidget {
   final Function toggle;
@@ -66,6 +67,17 @@ class _SigninState extends State<Signin> {
     }
   }
 
+  forgotPassword() {
+    if (email.text.isNotEmpty) {
+      authMethods.resetPassword(email.text);
+      Toast.show('An Email has been sent to change your password', context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    } else {
+      Toast.show('Please enter your email address', context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,12 +131,17 @@ class _SigninState extends State<Signin> {
                       SizedBox(
                         height: 8.0,
                       ),
-                      Container(
-                        alignment: Alignment.centerRight,
+                      GestureDetector(
+                        onTap: () {
+                          forgotPassword();
+                        },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
-                          child: Text('Forget Password?', style: textStyle()),
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            child: Text('Forget Password?', style: textStyle()),
+                          ),
                         ),
                       ),
                       SizedBox(
