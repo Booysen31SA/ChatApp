@@ -22,6 +22,8 @@ class _ConversationState extends State<Conversation> {
         builder: (context, snapshot) {
           return snapshot.hasData
               ? ListView.builder(
+                  reverse: true,
+                  padding: EdgeInsets.only(top: 15.0),
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     return MessageTile(
@@ -31,6 +33,36 @@ class _ConversationState extends State<Conversation> {
                   })
               : Container();
         });
+  }
+
+  buildMessageComposer() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: Colors.white,
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      height: 60.0,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: TextField(
+              textCapitalization: TextCapitalization.sentences,
+              controller: send,
+              decoration: InputDecoration.collapsed(hintText: 'Send Message'),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            iconSize: 25.0,
+            color: Colors.blue,
+            onPressed: () {
+              sendMessage();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -72,41 +104,13 @@ class _ConversationState extends State<Conversation> {
       body: Container(
           child: Stack(
         children: [
-          chatmessageList(),
+          Container(
+            padding: EdgeInsets.only(bottom: 60),
+            child: chatmessageList(),
+          ),
           Container(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              color: Color(0x54FFFFFF),
-              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              child: Row(children: [
-                Expanded(
-                  child: TextField(
-                      controller: send,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                          hintText: 'Send Message',
-                          hintStyle: TextStyle(color: Colors.white54),
-                          border: InputBorder.none)),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    sendMessage();
-                  },
-                  child: Container(
-                      height: 40,
-                      width: 40,
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          const Color(0x36FFFFFF),
-                          const Color(0x0FFFFFFF)
-                        ]),
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: Icon(Icons.send)),
-                )
-              ]),
-            ),
+            child: buildMessageComposer(),
           ),
         ],
       )),

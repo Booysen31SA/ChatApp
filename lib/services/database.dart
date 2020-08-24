@@ -39,7 +39,7 @@ class Database {
         .collection('Chatroom')
         .document(chatroomid)
         .collection('Chats')
-        .orderBy('time', descending: false)
+        .orderBy('time', descending: true)
         .snapshots();
   }
 
