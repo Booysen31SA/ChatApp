@@ -1,6 +1,7 @@
 import 'package:chatapp/helper/constants.dart';
 import 'package:chatapp/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class Conversation extends StatefulWidget {
   final String chatroomid;
@@ -76,7 +77,7 @@ class _ConversationState extends State<Conversation> {
   }
 
   sendMessage() {
-    if (send.text.isNotEmpty) {
+    if (send.text.isNotEmpty || send.text.length > 0) {
       Map<String, dynamic> messageMap = {
         'message': send.text,
         'sendby': Constants.username,
@@ -88,6 +89,9 @@ class _ConversationState extends State<Conversation> {
         messageMap,
       );
       send.text = '';
+    } else {
+      Toast.show('Please type a message', context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
     }
   }
 
