@@ -62,7 +62,7 @@ class _SearchState extends State<Search> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.send),
+            icon: Icon(Icons.search),
             iconSize: 25.0,
             color: Colors.blue,
             onPressed: () {
