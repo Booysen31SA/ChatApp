@@ -43,6 +43,37 @@ class _SearchState extends State<Search> {
     }
   }
 
+  searchComposer() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: Colors.white,
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      height: 60.0,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: TextField(
+              //textCapitalization: TextCapitalization.sentences,
+              controller: search,
+              decoration:
+                  InputDecoration.collapsed(hintText: 'Search for user'),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            iconSize: 25.0,
+            color: Colors.blue,
+            onPressed: () {
+              initiateSearch();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Widget searchTile({String username, String useremail}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -94,39 +125,9 @@ class _SearchState extends State<Search> {
     return Scaffold(
       appBar: AppBar(title: Text('Chats')),
       body: Container(
+        padding: EdgeInsets.only(top: 15),
         child: Column(children: [
-          Container(
-            color: Color(0x54FFFFFF),
-            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Row(children: [
-              Expanded(
-                child: TextField(
-                    controller: search,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                        hintText: 'Search Username',
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none)),
-              ),
-              GestureDetector(
-                onTap: () {
-                  initiateSearch();
-                },
-                child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        const Color(0x36FFFFFF),
-                        const Color(0x0FFFFFFF)
-                      ]),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Icon(Icons.search)),
-              )
-            ]),
-          ),
+          searchComposer(),
           searchList(),
         ]),
       ),
