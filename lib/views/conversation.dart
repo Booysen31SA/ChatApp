@@ -2,6 +2,7 @@ import 'package:chatapp/helper/constants.dart';
 import 'package:chatapp/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
+import 'package:intl/intl.dart';
 
 class Conversation extends StatefulWidget {
   final String chatroomid;
@@ -30,10 +31,41 @@ class _ConversationState extends State<Conversation> {
                     return MessageTile(
                         snapshot.data.documents[index].data['message'],
                         snapshot.data.documents[index].data['sendby'] ==
-                            Constants.username);
+                            Constants.username,
+                        readTimestamp(
+                            snapshot.data.documents[index].data['time']));
                   })
               : Container();
         });
+  }
+
+  String readTimestamp(int timestamp) {
+    var now = DateTime.now();
+    var format = DateFormat('dd MMMM yy HH:mm a');
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var diff = now.difference(date);
+    var time = '';
+
+    if (diff.inSeconds <= 0 ||
+        diff.inSeconds > 0 && diff.inMinutes == 0 ||
+        diff.inMinutes > 0 && diff.inHours == 0 ||
+        diff.inHours > 0 && diff.inDays == 0) {
+      time = format.format(date);
+    } else if (diff.inDays > 0 && diff.inDays < 7) {
+      if (diff.inDays == 1) {
+        time = diff.inDays.toString() + ' DAY AGO';
+      } else {
+        time = diff.inDays.toString() + ' DAYS AGO';
+      }
+    } else {
+      if (diff.inDays == 7) {
+        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
+      } else {
+        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
+      }
+    }
+
+    return time;
   }
 
   buildMessageComposer() {
@@ -125,38 +157,55 @@ class _ConversationState extends State<Conversation> {
 class MessageTile extends StatelessWidget {
   final String message;
   final isSendByMe;
-  MessageTile(this.message, this.isSendByMe);
+  final time;
+  MessageTile(this.message, this.isSendByMe, this.time);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          left: isSendByMe ? 0 : 24, right: isSendByMe ? 16 : 0),
-      margin: EdgeInsets.symmetric(vertical: 8),
-      width: MediaQuery.of(context).size.width,
-      alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: isSendByMe
-                  ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
-                  : [const Color(0x1AFFFFFF), const Color(0x1AFFFFFF)],
-            ),
-            borderRadius: isSendByMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomLeft: Radius.circular(23),
-                  )
-                : BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomRight: Radius.circular(23))),
-        child: Text(
-          message,
-          style: TextStyle(color: Colors.white, fontSize: 17),
+    return Column(children: [
+      Container(
+        padding: EdgeInsets.only(
+            left: isSendByMe ? 0 : 24, right: isSendByMe ? 16 : 0),
+        margin: EdgeInsets.symmetric(vertical: 8),
+        width: MediaQuery.of(context).size.width,
+        alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isSendByMe
+                    ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
+                    : [const Color(0x1AFFFFFF), const Color(0x1AFFFFFF)],
+              ),
+              borderRadius: isSendByMe
+                  ? BorderRadius.only(
+                      topLeft: Radius.circular(23),
+                      topRight: Radius.circular(23),
+                      bottomLeft: Radius.circular(23),
+                    )
+                  : BorderRadius.only(
+                      topLeft: Radius.circular(23),
+                      topRight: Radius.circular(23),
+                      bottomRight: Radius.circular(23))),
+          child: Text(
+            message,
+            style: TextStyle(color: Colors.white, fontSize: 17),
+          ),
         ),
       ),
-    );
+      Container(
+        padding: EdgeInsets.only(
+            left: isSendByMe ? 0 : 24, right: isSendByMe ? 16 : 0),
+        child: Row(
+          mainAxisAlignment:
+              isSendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+          children: [
+            Text(
+              time,
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    ]);
   }
 }
