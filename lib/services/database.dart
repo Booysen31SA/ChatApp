@@ -26,6 +26,13 @@ class Database {
         .setData(chatroomMap);
   }
 
+  updateConversationtime(String chatroomid, chatroomMap) {
+    Firestore.instance
+        .collection('Chatroom')
+        .document(chatroomid)
+        .setData(chatroomMap);
+  }
+
   addConversation(String chatroomid, messageMap) {
     Firestore.instance
         .collection('Chatroom')
@@ -47,6 +54,7 @@ class Database {
     return await Firestore.instance
         .collection('Chatroom')
         .where('users', arrayContains: username.trim())
+        .orderBy('time', descending: true)
         .snapshots();
   }
 }

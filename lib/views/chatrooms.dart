@@ -23,8 +23,11 @@ class _ChatRoomsState extends State<ChatRooms> {
         stream: chatroomStream,
         builder: (context, snapshot) {
           return snapshot.hasData
-              ? ListView.builder(
+              ? ListView.separated(
                   itemCount: snapshot.data.documents.length,
+                  separatorBuilder: (context, index) => Divider(
+                    color: Colors.blue,
+                  ),
                   itemBuilder: (context, index) {
                     return ChatroomTile(
                         snapshot.data.documents[index].data['chatroomid']
@@ -91,31 +94,21 @@ class ChatroomTile extends StatelessWidget {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => Conversation(chatroomid)));
       },
-      child: Container(
-        color: Colors.black26,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Row(
-          children: [
-            Container(
-              height: 40,
-              width: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(40)),
-              child: Text(
-                '${username.substring(0, 1).toUpperCase()}',
-                style: mediumtextStyle(),
-              ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Text(
-              username,
-              style: mediumtextStyle(),
-            )
-          ],
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(
+            '${username.substring(0, 1).toUpperCase()}',
+          ),
         ),
+        title: Text(
+          username,
+          style: mediumtextStyle(),
+        ),
+        //isThreeLine: true,
+        // subtitle: Text(
+        //   'Text of last message to be displayed',
+        //   style: TextStyle(color: Colors.white),
+        // ),
       ),
     );
   }

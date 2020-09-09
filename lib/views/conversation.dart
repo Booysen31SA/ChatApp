@@ -108,6 +108,19 @@ class _ConversationState extends State<Conversation> {
     super.initState();
   }
 
+  createChatRoomConversation() {
+    List<String> users = [
+      widget.chatroomid.replaceAll('_', '').replaceAll(Constants.username, ''),
+      Constants.username
+    ];
+    Map<String, dynamic> timeMap = {
+      'users': users,
+      'chatroomid': widget.chatroomid,
+      'time': DateTime.now().millisecondsSinceEpoch
+    };
+    database.updateConversationtime(widget.chatroomid, timeMap);
+  }
+
   sendMessage() {
     if (send.text.isNotEmpty || send.text.length > 0) {
       Map<String, dynamic> messageMap = {
@@ -120,6 +133,7 @@ class _ConversationState extends State<Conversation> {
         widget.chatroomid,
         messageMap,
       );
+      createChatRoomConversation();
       send.text = '';
     } else {
       Toast.show('Please type a message', context,
