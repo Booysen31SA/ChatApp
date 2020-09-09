@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chatapp/helper/authenicate.dart';
 import 'package:chatapp/helper/constants.dart';
 import 'package:chatapp/helper/helperFunctions.dart';
@@ -34,7 +36,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                             .toString()
                             .replaceAll('_', '')
                             .replaceAll(Constants.username, ''),
-                        snapshot.data.documents[index].data['chatroomid']);
+                        snapshot.data.documents[index].data['chatroomid'],
+                        snapshot.data.documents[index].data['lastmessage']);
                   },
                 )
               : Container();
@@ -44,6 +47,12 @@ class _ChatRoomsState extends State<ChatRooms> {
   @override
   void initState() {
     getUserInfo();
+    const second = const Duration(seconds: 1);
+    new Timer.periodic(second, (Timer t) {
+      setState(() {
+        getUserInfo();
+      });
+    });
     super.initState();
   }
 
@@ -86,7 +95,8 @@ class _ChatRoomsState extends State<ChatRooms> {
 class ChatroomTile extends StatelessWidget {
   final String username;
   final String chatroomid;
-  ChatroomTile(this.username, this.chatroomid);
+  final String lastmessage;
+  ChatroomTile(this.username, this.chatroomid, this.lastmessage);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -104,11 +114,11 @@ class ChatroomTile extends StatelessWidget {
           username,
           style: mediumtextStyle(),
         ),
-        //isThreeLine: true,
-        // subtitle: Text(
-        //   'Text of last message to be displayed',
-        //   style: TextStyle(color: Colors.white),
-        // ),
+        isThreeLine: true,
+        subtitle: Text(
+          lastmessage == null ? '' : lastmessage,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

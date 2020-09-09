@@ -116,7 +116,8 @@ class _ConversationState extends State<Conversation> {
     Map<String, dynamic> timeMap = {
       'users': users,
       'chatroomid': widget.chatroomid,
-      'time': DateTime.now().millisecondsSinceEpoch
+      'time': DateTime.now().millisecondsSinceEpoch,
+      'lastmessage': send.text
     };
     database.updateConversationtime(widget.chatroomid, timeMap);
   }
